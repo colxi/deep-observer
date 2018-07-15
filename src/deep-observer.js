@@ -86,7 +86,7 @@
                     }
 
                     // invoke the callback
-                    callback({action:action,keyPath:keyPath, object: target, name:property, oldValue : oldValue});
+                    callback({action:action, keyPath:keyPath, object: target, name:property, oldValue : oldValue});
                     return true;
                 },
 
@@ -94,7 +94,7 @@
                     let oldValue = target[property];
                     delete target[property];
                     // invoke the callback
-                    callback({action:'delete',keyPath:keyPath, object: target, name:property, oldValue : oldValue});
+                    callback({action:'delete', keyPath:keyPath, object: target, name:property, oldValue : oldValue});
                     return true;
                 },
 
@@ -120,11 +120,16 @@
      * @param {Object} conf [description]
      */
     const Observer = function( object , callback , id ){
-        id = id || 'OBSERVED-'+Math.floor( Math.random()* Date.now() );
         object = object || undefined;
+        id = id || 'OBSERVED-'+Math.floor( Math.random()* Date.now() );
 
         // if callback are provided, behave as a setter
         if(arguments.length > 1){
+            // validate input
+            if(!(this instanceof Observer) ) throw new Error('Observer must be called with "new" when used as constructor');
+            if( !isObjLiteralOrArray(object) ) throw new Error('First argument must be an Object or an Array');
+            if(typeof callback !== 'function') throw new Error('Second argument (callback) must be a function.');
+            // create Observer
             OBSERVED[id] = newObserver(object, id , callback || new Function());
         }
 
@@ -133,7 +138,7 @@
 
 
     // done!
-    if (typeof module !== 'undefined' && module.exports) exports.Observer = Observer;
+    if (typeof module !== 'undefined' && module.exports) module.exports = Observer;
     else window.Observer = Observer;
 
 })();

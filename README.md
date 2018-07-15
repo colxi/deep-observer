@@ -5,7 +5,8 @@
 [![Browser](https://img.shields.io/badge/browser-compatible-blue.svg)](https://github.com/colxi/midi-parser-js)
 [![Node](https://img.shields.io/badge/node-compatible-brightgreen.svg)](https://www.npmjs.com/package/midi-parser-js)
 
-Tiny **Object Observe** library ( < 100bytes gziped), to deep watch and track changes in Objects and Arrays. The provided callback to the constuctor is executed each time a change is deteced, passing a complete set of data relative to the detected change
+Tiny **Object Observe** library ( < 100bytes gziped), to deep watch and track changes in Objects and Arrays. The provided callback to the Constuctor is executed each time a change is deteced, recieving a complete set of data relative to the detected change.
+
 
  
 - Deep Observation ( nested Objects )
@@ -27,7 +28,7 @@ When at least two arguments are passed to `Observer()` , it behaves as a Constru
 
 - **`object`**: Object to observe
 - **`callback`** : Function to be invoked on object changes
-- **`id`** : (optional) String to associate to the Observable. (if not provided is generated automatically)
+- **`id`** : (optional) String to u se as identifier to the Observable. (if not provided is generated automatically)
 
 **Returns** : an Observable (Proxy)
 
@@ -35,17 +36,17 @@ When at least two arguments are passed to `Observer()` , it behaves as a Constru
 When only a String is provided  to `Observer()` it behaves as a getter :
 > **Observer( id )**
 
-- **`ìd`**: String used as id in the constructor
+- **`ìd`**: String provided previously in the constructor
 
 **Returns** : the matching Observable (Proxy) or undefined
 
 ### 3. Callback function
 
-The provided callback will receive an event object containng the following properties, each time a change is applied to the object :
+The function called each time changes are made, will receive an event object containng the following properties :
 
 - **`action`** : String containing one of the following values : add|update|delete
-- **`object`**: Affected property parent's object
-- **`name`**: Name of the affected property (or array index)
+- **`object`**: Affected property parent's Object
+- **`name`**: Name of the modified property (or array index)
 - **`oldValue`** : Value of the property before the change
 - **`keypath`** : String representing the internal path to the affected property. 
 
