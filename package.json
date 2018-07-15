@@ -1,7 +1,7 @@
 {
     "name": "deep-observer",
     "version": "1.0.1",
-    "description": "Deep Object Observe, and and execute callbacks on changes are applied (add,update,delete)",
+    "description": "Tiny Object Observe library, to deep watch and track changes in Objects and Arrays.",
     "main": "./src/deep-observer.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"

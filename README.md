@@ -5,7 +5,7 @@
 [![Browser](https://img.shields.io/badge/browser-compatible-blue.svg)](https://github.com/colxi/midi-parser-js)
 [![Node](https://img.shields.io/badge/node-compatible-brightgreen.svg)](https://www.npmjs.com/package/midi-parser-js)
 
-Tiny **Object Observe** library (<100 bytes gziped), to deep watch and track chages in Objects and Arrays. The provided callback to the constuctor is executed each time a change is deteced, passing a complete set of data relative to the detected change
+Tiny **Object Observe** library ( < 100bytes gziped), to deep watch and track changes in Objects and Arrays. The provided callback to the constuctor is executed each time a change is deteced, passing a complete set of data relative to the detected change
 
  
 - Deep Observation ( nested Objects )
@@ -20,31 +20,43 @@ Tiny **Object Observe** library (<100 bytes gziped), to deep watch and track cha
 -- Safari 10
 
 ## Syntax
-When at least two arguments are passed, it behaves as a Constructor :
-> new Observer( object , callback [, id] )
 
-- `object`: Object to observe
-- `callback` : Function to be invoked on object changes
-- `id` : (optional) String to associate to the Observable
+### 1. Constructor
+When at least two arguments are passed to `Observer()` , it behaves as a Constructor :
+> **new Observer( object , callback [, id] )**
+
+- **`object`**: Object to observe
+- **`callback`** : Function to be invoked on object changes
+- **`id`** : (optional) String to associate to the Observable. (if not provided is generated automatically)
 
 **Returns** : an Observable (Proxy)
 
----
-When only a String is provided it behaves as a getter :
-> Observer( id )
+### 2. Getter 
+When only a String is provided  to `Observer()` it behaves as a getter :
+> **Observer( id )**
 
-- `ìd`: String used as id in the constructor
+- **`ìd`**: String used as id in the constructor
 
-**Returns** : the matching Observable (Proxy)
+**Returns** : the matching Observable (Proxy) or undefined
 
+### 3. Callback function
 
+The provided callback will receive an event object containng the following properties, each time a change is applied to the object :
 
-## Usage example 
+- **`action`** : String containing one of the following values : add|update|delete
+- **`object`**: Affected property parent's object
+- **`name`**: Name of the affected property (or array index)
+- **`oldValue`** : Value of the property before the change
+- **`keypath`** : String representing the internal path to the affected property. 
 
-Provide to the constructor an object and a callback, and perform a change on the object, to trigger the callback : 
+## Basic usage example 
 
-```
+Provide to the constructor an `object` and a `callback`, and perform a change on the object, to  see how the `callback` is triggered: 
+
+```javascript
+   // create an observable object
    const myObserved = new Observer( { a : 12 } , e=>console.log('changed!' , e) ),
+   // perform a modification
    myObserved.a = 14; 
    // console outputs : 'changed!' { action:'update', oldValue:12, object:{a:14}, name:'a' }
 ```
@@ -53,11 +65,15 @@ Provide to the constructor an object and a callback, and perform a change on the
 
 In browser enviroment you can include this library using the jsdelivr CDN ...
 
-```<script src='https://cdn.jsdelivr.net/gh/colxi/deep-observer@latest/src/deep-observer.min.js'></script>```
+```
+<script src='https://cdn.jsdelivr.net/gh/colxi/deep-observer@latest/src/deep-observer.min.js'></script>
+```
 
 If you are in the NodeJs enviroment, can install the package via:
 
-```$ npm install deep-observer```
+```
+$ npm install deep-observer --save
+```
 
 
 ## Licence 
