@@ -30,7 +30,7 @@ When at least two arguments are passed to `Observer()` , it behaves as a Constru
 - **`callback`** : Function to be invoked on object changes
 - **`config`** : (optional) Object
  - **`id`** : String to use as identifier to the Observable. (if not provided is generated automatically)
- - **`observeConstruction`** : Boolean. If true callback will be executed also in construction stage.
+ - **`observeConstruction`** : Boolean. If true callback will be executed also in construction stage. (default: false)
 
 **Returns** : an Observable (Proxy)
 
