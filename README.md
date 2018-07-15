@@ -9,11 +9,12 @@ Tiny **Object Observe** library ( < 100bytes gziped), to deep watch and track ch
 
 
  
-- Deep Observation ( nested Objects )
-- Based in Proxies (ES6) and WeakSets (ES6)
-- Compatible with Node and Browser
+- Deep Observation ( configurable Depth )
+- Optional construction observe
 - Compatible with all JS primitive types
-- Wide support in Browsers : 
+- No dependencies
+- Wide platform support : 
+  - Node 
   - Chrome 49
   - Firefox 34
   - Edge 14
@@ -31,6 +32,7 @@ When at least two arguments are passed to `Observer()` , it behaves as a Constru
 - **`config`** : (optional) Object
   - **`id`** : String to use as identifier to the Observable. (if not provided is generated automatically)
   - **`observeConstruction`** : Boolean. If true callback will be executed also in construction stage. (default: false)
+  - **`depth`** : Integer. Sets the observing depth limit. When set to 0, no limit is applied (default : 0 )
 
 **Returns** : an Observable (Proxy)
 

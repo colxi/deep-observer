@@ -17,12 +17,10 @@
     /**
      * isObjLiteralOrArray : Modified version to include arrays, taken from :
      * https://stackoverflow.com/questions/1173549/]
-     *
      * Arguments:
-     *     _obj         Item to analyze
+     *     _obj        : Item to analyze
      *
-     * Return:
-     *     Boolean
+     * Return: Boolean
      *
      */
     const isObjLiteralOrArray = function(_obj){
@@ -51,7 +49,7 @@
      * @param  {Function} callback      [description]
      * @return {[type]}                 [description]
      */
-    const newObserver = function( value, callback, keyPath, config, CONSTRUCTION_STAGE){
+    const newObserver = function( value, callback, keyPath, config, CONSTRUCTION_STAGE , CURRENT_DEPTH){
         let result;
 
         if( OBSERVED_WS.has(value) ){
@@ -76,10 +74,13 @@
                     // no action is required, becacause no changes are being applied
                     if( action === 'update' && oldValue===value ) return true;
 
-                    if( isObjLiteralOrArray(value) ){
+                    // generae a new observer if value if an ibject or array,
+                    // unless depth restriction has beenn provided and
+                    // CURRENT_DEPTH is greater than it
+                    if( isObjLiteralOrArray(value) && (!config.depth || CURRENT_DEPTH < config.depth) ){
                         // if value to SET is an Object or Array, create a new
                         // proxy, with updated keypath
-                        target[property] = newObserver(value , callback, keyPath+'.'+property, config, CONSTRUCTION_STAGE);
+                        target[property] = newObserver(value , callback, keyPath+'.'+property, config, CONSTRUCTION_STAGE , CURRENT_DEPTH+1);
                     }else{
                         // anything else, set the new value
                         target[property] = value;
@@ -124,7 +125,7 @@
     /**
      * Observer() has two behaviors:
      *  1. Constructor : When at least two arguments are passed to `Observer()` ,
-     *     it behaves as a Constructor. Argumnts :
+     *     it behaves as a Constructor. Arguments :
      *       object     : Object to observe
      *       callback   : Function to be invoked on object changes
      *       config     : (optional) Object containing advanced config parameters.
@@ -132,8 +133,11 @@
      *                        (if not provided is generated automatically)
      *           observeConstruction   : Boolean. If true callback will be executed
      *                        also in construction stage.
+     *           depth      : Integer. Sets the observing depth limit. When set
+     *                        to 0, no limit is applied ( default : 0 )
+     *
      *  2. Getter : When only a String is provided  to `Observer()` it behaves
-     *     as a getter. Argumnts :
+     *     as a getter. Arguments :
      *       ìd         : String provided previously in the constructor
      *
      * Return : Observable (Proxy).
@@ -146,19 +150,19 @@
         const config = {
             id : _config.id || 'OBSERVED-'+Math.floor( Math.random()* Date.now() ),
             observeConstruction : !_config.observeConstruction ? false : true,
-            // todo...
-            //depth : Number(_config.depth) > 0 ? Number(_config.depth) : 0
+            depth : Number(_config.depth) > 0 ? Number(_config.depth) : 0,
+            // batchNotifications : false
         };
 
         // if callback are provided, behave as a setter
         if(arguments.length > 1){
             // validate input
-            if( !(this instanceof Observer) ) throw new Error('Observer must be called with "new" when used as constructor');
+            if( !(this instanceof Observer) ) throw new Error('Constructor Observer requires \'new\'');
             if( !isObjLiteralOrArray(object) ) throw new Error('First argument must be an Object or an Array');
             if( typeof callback !== 'function' ) throw new Error('Second argument (callback) must be a function.');
 
             // create Observer
-            OBSERVED[config.id] = newObserver(object, callback, config.id, config, true);
+            OBSERVED[config.id] = newObserver(object, callback, config.id, config, true, 0);
         }else{
             // if only one argument is passed assume is an id
             config.id = object;
