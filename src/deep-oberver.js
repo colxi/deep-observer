@@ -119,16 +119,16 @@
      * [Observer description]
      * @param {Object} conf [description]
      */
-    const Observer = function( conf = {} ){
-        const modelName = conf.name || 'OBSERVED-'+Math.floor( Math.random()* Date.now() );
-        const content = conf.item || undefined;
+    const Observer = function( object , callback , id ){
+        id = id || 'OBSERVED-'+Math.floor( Math.random()* Date.now() );
+        object = object || undefined;
 
-        // if contents are provided, behave as a setter
-        if(typeof content !== 'undefined'){
-            OBSERVED[modelName] = newObserver(content, modelName, conf.callback || new Function());
+        // if callback are provided, behave as a setter
+        if(arguments.length > 1){
+            OBSERVED[id] = newObserver(object, id , callback || new Function());
         }
 
-        return OBSERVED[modelName];
+        return OBSERVED[id];
     };
 
 
