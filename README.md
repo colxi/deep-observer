@@ -14,11 +14,11 @@ Tiny **Object Observe** library ( < 100bytes gziped), to deep watch and track ch
 - Compatible with Node and Browser
 - Compatible with all JS primitive types
 - Wide support in Browsers : 
--- Chrome 49
--- Firefox 34
--- Edge 14
--- Opera 36
--- Safari 10
+  - Chrome 49
+  - Firefox 34
+  - Edge 14
+  - Opera 36
+  - Safari 10
 
 ## Syntax
 
@@ -29,8 +29,8 @@ When at least two arguments are passed to `Observer()` , it behaves as a Constru
 - **`object`**: Object to observe
 - **`callback`** : Function to be invoked on object changes
 - **`config`** : (optional) Object
- - **`id`** : String to use as identifier to the Observable. (if not provided is generated automatically)
- - **`observeConstruction`** : Boolean. If true callback will be executed also in construction stage. (default: false)
+  - **`id`** : String to use as identifier to the Observable. (if not provided is generated automatically)
+  - **`observeConstruction`** : Boolean. If true callback will be executed also in construction stage. (default: false)
 
 **Returns** : an Observable (Proxy)
 
