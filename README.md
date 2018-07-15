@@ -23,19 +23,19 @@ Tiny **Object Observe** library (<100 bytes gziped), to deep watch and track cha
 When at least two arguments are passed, it behaves as a Constructor :
 > new Observer( object , callback [, id] )
 
-`object`: Object to observe
-`callback` : Function to be invoked on object changes
-`id` : (optional) String to associate to the Observable
+- `object`: Object to observe
+- `callback` : Function to be invoked on object changes
+- `id` : (optional) String to associate to the Observable
 
-Returns an Observable (Proxy)
+**Returns** : an Observable (Proxy)
 
 ---
 When only a String is provided it behaves as a getter :
 > Observer( id )
 
-`ìd`: String used as id in the constructor
+- `ìd`: String used as id in the constructor
 
-Returns the matching Observable (Proxy)
+**Returns** : the matching Observable (Proxy)
 
 
 
