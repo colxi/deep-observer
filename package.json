@@ -1,6 +1,6 @@
 {
     "name": "deep-observer",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Tiny Object Observe library, to deep watch and track changes in Objects and Arrays.",
     "main": "./src/deep-observer.js",
     "scripts": {
