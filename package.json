@@ -1,27 +1,29 @@
 {
-  "name": "deep-observer",
-  "version": "1.0.0",
-  "description": "Deep Object Observe, and and execute callbacks on changes are applied (add,update,delete)",
-  "main": "./src/deep-observer.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/colxi/deep-observer.git"
-  },
-  "keywords": [
-    "object",
-    "observe",
-    "observer",
-    "watch",
-    "objec",
-    "watch"
-  ],
-  "author": "colxi",
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/colxi/deep-observer/issues"
-  },
-  "homepage": "https://github.com/colxi/deep-observer#readme"
+    "name": "deep-observer",
+    "version": "1.0.1",
+    "description": "Deep Object Observe, and and execute callbacks on changes are applied (add,update,delete)",
+    "main": "./src/deep-observer.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/colxi/deep-observer.git"
+    },
+    "keywords": [
+        "observe",
+        "observer",
+        "observable",
+        "deep-observe",
+        "object-observe",
+        "watch",
+        "watcher",
+        "object watch"
+    ],
+    "author": "colxi",
+    "license": "GPL-3.0",
+    "bugs": {
+        "url": "https://github.com/colxi/deep-observer/issues"
+    },
+    "homepage": "https://github.com/colxi/deep-observer#readme"
 }

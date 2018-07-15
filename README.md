@@ -53,7 +53,7 @@ Provide to the constructor an object and a callback, and perform a change on the
 
 In browser enviroment you can include this library using the jsdelivr CDN ...
 
-```<script src='https://cdn.jsdelivr.net/gh/colxi/deep-observer/src/deep-observer.min.js'></script>```
+```<script src='https://cdn.jsdelivr.net/gh/colxi/deep-observer@latest/src/deep-observer.min.js'></script>```
 
 If you are in the NodeJs enviroment, can install the package via:
 
