@@ -16,7 +16,7 @@ Tiny **Object Observe** library ( < 100bytes gziped), to deep watch and track ch
 - Wide support in Browsers : 
 -- Chrome 49
 -- Firefox 34
--- Edge 12
+-- Edge 14
 -- Opera 36
 -- Safari 10
 
@@ -24,11 +24,13 @@ Tiny **Object Observe** library ( < 100bytes gziped), to deep watch and track ch
 
 ### 1. Constructor
 When at least two arguments are passed to `Observer()` , it behaves as a Constructor :
-> **new Observer( object , callback [, id] )**
+> **new Observer( object , callback [, config] )**
 
 - **`object`**: Object to observe
 - **`callback`** : Function to be invoked on object changes
-- **`id`** : (optional) String to u se as identifier to the Observable. (if not provided is generated automatically)
+- **`config`** : (optional) Object
+ - **`id`** : String to use as identifier to the Observable. (if not provided is generated automatically)
+ - **`observeConstruction`** : Boolean. If true callback will be executed also in construction stage.
 
 **Returns** : an Observable (Proxy)
 
@@ -36,7 +38,7 @@ When at least two arguments are passed to `Observer()` , it behaves as a Constru
 When only a String is provided  to `Observer()` it behaves as a getter :
 > **Observer( id )**
 
-- **`ìd`**: String provided previously in the constructor
+- **`ìd`**: String provided previously in the constructor config object
 
 **Returns** : the matching Observable (Proxy) or undefined
 

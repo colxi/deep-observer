@@ -51,7 +51,7 @@
      * @param  {Function} callback      [description]
      * @return {[type]}                 [description]
      */
-    const newObserver = function( value, keyPath, callback){
+    const newObserver = function( value, callback, keyPath, config, CONSTRUCTION_STAGE){
         let result;
 
         if( OBSERVED_WS.has(value) ){
@@ -79,14 +79,18 @@
                     if( isObjLiteralOrArray(value) ){
                         // if value to SET is an Object or Array, create a new
                         // proxy, with updated keypath
-                        target[property] = newObserver(value , keyPath+'.'+property,callback);
+                        target[property] = newObserver(value , callback, keyPath+'.'+property, config, CONSTRUCTION_STAGE);
                     }else{
                         // anything else, set the new value
                         target[property] = value;
                     }
 
-                    // invoke the callback
-                    callback({action:action, keyPath:keyPath, object: target, name:property, oldValue : oldValue});
+                    // if its not in construction stage, or is in construction
+                    // stage but construction observation has been requested
+                    // invoke the callback...
+                    if(!CONSTRUCTION_STAGE || (CONSTRUCTION_STAGE && config.observeConstruction) ){
+                        callback({action:action, keyPath:keyPath, object: target, name:property, oldValue : oldValue});
+                    }
                     return true;
                 },
 
@@ -112,28 +116,55 @@
             result = ObserbableObject;
         }
 
+        CONSTRUCTION_STAGE = false;
+
         return result;
     };
 
     /**
-     * [Observer description]
-     * @param {Object} conf [description]
+     * Observer() has two behaviors:
+     *  1. Constructor : When at least two arguments are passed to `Observer()` ,
+     *     it behaves as a Constructor. Argumnts :
+     *       object     : Object to observe
+     *       callback   : Function to be invoked on object changes
+     *       config     : (optional) Object containing advanced config parameters.
+     *           id         : String to use as identifier to the  Observable.
+     *                        (if not provided is generated automatically)
+     *           observeConstruction   : Boolean. If true callback will be executed
+     *                        also in construction stage.
+     *  2. Getter : When only a String is provided  to `Observer()` it behaves
+     *     as a getter. Argumnts :
+     *       ìd         : String provided previously in the constructor
+     *
+     * Return : Observable (Proxy).
      */
-    const Observer = function( object , callback , id ){
-        object = object || undefined;
-        id = id || 'OBSERVED-'+Math.floor( Math.random()* Date.now() );
+    const Observer = function( object={} , callback= new Function() , _config={} ){
+
+        // validate config object
+        if( typeof _config !== 'object' ) throw new Error('Third argument (config) must be an object');
+        // build config object
+        const config = {
+            id : _config.id || 'OBSERVED-'+Math.floor( Math.random()* Date.now() ),
+            observeConstruction : !_config.observeConstruction ? false : true,
+            // todo...
+            //depth : Number(_config.depth) > 0 ? Number(_config.depth) : 0
+        };
 
         // if callback are provided, behave as a setter
         if(arguments.length > 1){
             // validate input
-            if(!(this instanceof Observer) ) throw new Error('Observer must be called with "new" when used as constructor');
+            if( !(this instanceof Observer) ) throw new Error('Observer must be called with "new" when used as constructor');
             if( !isObjLiteralOrArray(object) ) throw new Error('First argument must be an Object or an Array');
-            if(typeof callback !== 'function') throw new Error('Second argument (callback) must be a function.');
+            if( typeof callback !== 'function' ) throw new Error('Second argument (callback) must be a function.');
+
             // create Observer
-            OBSERVED[id] = newObserver(object, id , callback || new Function());
+            OBSERVED[config.id] = newObserver(object, callback, config.id, config, true);
+        }else{
+            // if only one argument is passed assume is an id
+            config.id = object;
         }
 
-        return OBSERVED[id];
+        return OBSERVED[config.id];
     };
 
 
