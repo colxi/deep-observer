@@ -90,7 +90,7 @@
                     // stage but construction observation has been requested
                     // invoke the callback...
                     if(!CONSTRUCTION_STAGE || (CONSTRUCTION_STAGE && config.observeConstruction) ){
-                        callback({action:action, keyPath:keyPath, object: target, name:property, oldValue : oldValue});
+                        callback({action:action, keyPath:keyPath+'.'+property, object: target, name:property, oldValue : oldValue});
                     }
                     return true;
                 },
@@ -99,7 +99,7 @@
                     let oldValue = target[property];
                     delete target[property];
                     // invoke the callback
-                    callback({action:'delete', keyPath:keyPath, object: target, name:property, oldValue : oldValue});
+                    callback({action:'delete', keyPath:keyPath+'.'+property, object: target, name:property, oldValue : oldValue});
                     return true;
                 },
 
