@@ -30,11 +30,14 @@ When at least two arguments are passed to `Observer()` , it behaves as a Constru
 - **`object`**: Object to observe
 - **`callback`** : Function to be invoked on object changes
 - **`config`** : (optional) Object
-  - **`id`** : String to use as identifier to the Observable. (if not provided is generated automatically)
+  - **`id`** : Unique string to use as identifier to the Observable. (if not provided is generated automatically)
   - **`observeConstruction`** : Boolean. If true callback will be executed also in construction stage. (default: false)
   - **`depth`** : Integer. Sets the observing depth limit. When set to 0, no limit is applied (default : 0 )
 
 **Returns** : an Observable (Proxy)
+
+
+> Note : deep-observer **DOES NOT** perform changes in the original provided Object. The observation is performed in the Observable returned Object. 
 
 ### 2. Getter 
 When only a String is provided  to `Observer()` it behaves as a getter :
@@ -60,10 +63,35 @@ Provide to the constructor an `object` and a `callback`, and perform a change on
 
 ```javascript
    // create an observable object
-   const myObserved = new Observer( { a : 12 } , e=>console.log('changed!' , e) ),
+   const myObserved = new Observer( { a : 12 } , e=>console.log('changed!' , e) );
    // perform a modification
    myObserved.a = 14; 
    // console outputs : 'changed!' { action:'update', oldValue:12, object:{a:14}, name:'a' }
+```
+## Advanced usage example 
+
+An example of new Observer using all the configuration parameters 
+
+```javascript
+   // create an observable object
+   const myObserved = new Observer( 
+       { a : 12 } ,   // object to abserve
+       e=>console.log('changed!' , e) ,  // callback
+       {
+           id : 'observed-14',    // observable internal id  
+           depth : 5,   // observe maximum 6 levels of depth
+           observeConstruction : true  // execute callback on construction
+       }
+   );
+   // because observeConstruction=true, callback fuction is executed...
+   // console outputs : 'changed!' { action:'add', oldValue:undefined, object:{a:12}, name:'a' }
+   // perform a modification...
+   myObserved.a = 14; 
+   // console outputs : 'changed!' { action:'update', oldValue:12, object:{a:14}, name:'a' }
+   // retrieve the observable...
+   const sameObserved = Observer('observed-14');
+   console.log( myObserved, sameObserved );
+   // console outputs : {a:14} , {a:14}
 ```
 
 ## Package distribution :
