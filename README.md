@@ -79,21 +79,21 @@ An example of new Observer using all the configuration parameters
        { a : 12 } ,   // object to abserve
        e=>console.log('changed!' , e) ,  // callback
        {
-           id : 'observed_1',    // observable internal id  
-           depth : 5,   // observe maximum 6 levels of depth
+           id : 'observed_1', // observable internal id  
+           depth : 5, // observe maximum 6 levels of depth
            observeConstruction : true , // execute callback on construction
            ignoreSameValueReassign : false // call callback always
        }
    );
    // because observeConstruction=true, callback fuction is executed...
-   // console outputs : 'changed!' { action:'add', oldValue:undefined, object:{a:12}, name:'a' }
+   // console outputs : 'changed!' { action:'add', keypath : 'observed_1.a.' , oldValue:undefined, object:{a:12}, name:'a' }
    // perform a modification...
    myObserved.a = 14; 
    // console outputs : 'changed!' { action:'update', keypath : 'observed_1.a.' , oldValue:12, object:{a:14}, name:'a' }
    // retrieve the observable...
-   const sameObserved = Observer('observed-14');
-   console.log( myObserved, sameObserved );
-   // console outputs : {a:14} , {a:14}
+   const sameObserved = Observer('observed_1');
+   console.log( myObserved === sameObserved );
+   // console outputs : true
 ```
 
 ## Package distribution :
