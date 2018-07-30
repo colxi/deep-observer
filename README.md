@@ -33,6 +33,7 @@ When at least two arguments are passed to `Observer()` , it behaves as a Constru
   - **`id`** : Unique string to use as identifier to the Observable. (if not provided is generated automatically)
   - **`observeConstruction`** : Boolean. If true callback will be executed also in construction stage. (default: false)
   - **`depth`** : Integer. Sets the observing depth limit. When set to 0, no limit is applied (default : 0 )
+  - **`ignoreSameValueReassign`** : Boolean. By default callback is only executed when the assigned value differs from the previous one. When this option is set to false, callback function is executed always  ( default : true )
 
 **Returns** : an Observable (Proxy)
 
@@ -78,16 +79,17 @@ An example of new Observer using all the configuration parameters
        { a : 12 } ,   // object to abserve
        e=>console.log('changed!' , e) ,  // callback
        {
-           id : 'observed-14',    // observable internal id  
+           id : 'observed_1',    // observable internal id  
            depth : 5,   // observe maximum 6 levels of depth
-           observeConstruction : true  // execute callback on construction
+           observeConstruction : true , // execute callback on construction
+           ignoreSameValueReassign : false // call callback always
        }
    );
    // because observeConstruction=true, callback fuction is executed...
    // console outputs : 'changed!' { action:'add', oldValue:undefined, object:{a:12}, name:'a' }
    // perform a modification...
    myObserved.a = 14; 
-   // console outputs : 'changed!' { action:'update', oldValue:12, object:{a:14}, name:'a' }
+   // console outputs : 'changed!' { action:'update', keypath : 'observed_1.a.' , oldValue:12, object:{a:14}, name:'a' }
    // retrieve the observable...
    const sameObserved = Observer('observed-14');
    console.log( myObserved, sameObserved );

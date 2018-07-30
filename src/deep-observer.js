@@ -72,7 +72,10 @@
 
                     // if performing an update and new value equals old value,
                     // no action is required, becacause no changes are being applied
-                    if( action === 'update' && oldValue===value ) return true;
+                    // ( configrable behavior )
+                    if( config.ignoreSameValueReassign &&
+                        action === 'update' &&
+                        oldValue===value ) return true;
 
                     // generae a new observer if value if an ibject or array,
                     // unless depth restriction has beenn provided and
@@ -135,6 +138,8 @@
      *                        also in construction stage.
      *           depth      : Integer. Sets the observing depth limit. When set
      *                        to 0, no limit is applied ( default : 0 )
+     *           ignoreSameValueReassign : Boolean. If false, trigger callback
+     *                        even when same value is reassgned ( default true )
      *
      *  2. Getter : When only a String is provided  to `Observer()` it behaves
      *     as a getter. Arguments :
@@ -151,6 +156,7 @@
             id : _config.id || 'OBSERVED-'+Math.floor( Math.random()* Date.now() ),
             observeConstruction : !_config.observeConstruction ? false : true,
             depth : Number(_config.depth) > 0 ? Number(_config.depth) : 0,
+            ignoreSameValueReassign : _config.ignoreSameValueReassign ? true : false
             // batchNotifications : false
         };
 
