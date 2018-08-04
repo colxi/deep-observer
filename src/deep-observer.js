@@ -43,14 +43,15 @@
 
 
     /**
-     * newObserver
-     * @param  {[newObservertype]}   modelContents [description]
+     * createObserver
+     * @param  {[createObservertype]}   modelContents [description]
      * @param  {[type]}   keyPath       [description]
      * @param  {Function} callback      [description]
      * @return {[type]}                 [description]
      */
-    const newObserver = function( value, callback, keyPath, config, CONSTRUCTION_STAGE , CURRENT_DEPTH){
+    const createObserver = function( value, callback, keyPath, config, CONSTRUCTION_STAGE , CURRENT_DEPTH){
         let result;
+        let constructionCallbacks = [];
 
         if( OBSERVED_WS.has(value) ){
             // IGNORE ASIGNEMENT
@@ -64,7 +65,7 @@
             //
             let _target =  Array.isArray(value) ? []:{};
 
-            let ObserbableObject =  new Proxy( _target , {
+            let ProxyObject =  new Proxy( _target , {
                 set : function(target, property, value){
                     // save old value and detect action type
                     let oldValue = target[property];
@@ -83,18 +84,30 @@
                     if( isObjLiteralOrArray(value) && (!config.depth || CURRENT_DEPTH < config.depth) ){
                         // if value to SET is an Object or Array, create a new
                         // proxy, with updated keypath
-                        target[property] = newObserver(value , callback, keyPath+'.'+property, config, CONSTRUCTION_STAGE , CURRENT_DEPTH+1);
+                        let newObserver = createObserver(value , callback, keyPath+'.'+property, config, true , CURRENT_DEPTH+1);
+                        // if callbacks executions are returned, attch them to the queue
+                        constructionCallbacks = constructionCallbacks.concat( newObserver.callbacks );
+                        // assignnthe new observer level
+                        target[property] = newObserver.observer;
                     }else{
                         // anything else, set the new value
                         target[property] = value;
                     }
 
-                    // if its not in construction stage, or is in construction
-                    // stage but construction observation has been requested
-                    // invoke the callback...
-                    if(!CONSTRUCTION_STAGE || (CONSTRUCTION_STAGE && config.observeConstruction) ){
-                        callback({action:action, keyPath:keyPath+'.'+property, object: target, name:property, oldValue : oldValue});
+                    // callbacks...
+                    if( !CONSTRUCTION_STAGE ){
+                        // if its not in construction stage, execute callback
+                        callback( {action:action, keyPath:keyPath+'.'+property, object: target, name:property, oldValue : oldValue} );
+                        //  iterate callback queue and execute them
+                        if( constructionCallbacks.length ) constructionCallbacks.forEach( i=> callback(i) );
+                        // clear the callbacks queue
+                        constructionCallbacks.splice(0)
+                    }else if( CONSTRUCTION_STAGE && config.observeConstruction ){
+                        // if is in construction stage but construction observation
+                        // has been requested ad callback to the queue.
+                        constructionCallbacks.push( {action:action, keyPath:keyPath+'.'+property, object: target, name:property, oldValue : oldValue} );
                     }
+                    // done !
                     return true;
                 },
 
@@ -108,21 +121,21 @@
 
                 get : function(target, property){
                     //
-                    return target[property];
+                    return  target[property];
                 }
             });
 
-            // assign the properties to the ObserbableObject
-            Object.assign( ObserbableObject, value );
+            // assign the properties to the ProxyObject
+            ProxyObject = Object.assign( ProxyObject, value );
             // add the object to the observed objects
-            OBSERVED_WS.add(ObserbableObject);
+            OBSERVED_WS.add(ProxyObject);
 
-            result = ObserbableObject;
+            result = ProxyObject;
         }
 
         CONSTRUCTION_STAGE = false;
 
-        return result;
+        return { observer: result , callbacks :  constructionCallbacks.splice(0) };
     };
 
     /**
@@ -168,7 +181,10 @@
             if( typeof callback !== 'function' ) throw new Error('Second argument (callback) must be a function.');
 
             // create Observer
-            OBSERVED[config.id] = newObserver(object, callback, config.id, config, true, 0);
+            let newObserver = createObserver(object, callback, config.id, config, true, 0);
+            OBSERVED[config.id] = newObserver.observer;
+
+            newObserver.callbacks.forEach(i=> callback(i));
         }else{
             // if only one argument is passed assume is an id
             config.id = object;
@@ -176,6 +192,9 @@
 
         return OBSERVED[config.id];
     };
+
+    // debuggng method
+    Observer._enumerate_= function(){ return OBSERVED };
 
 
     // done!
